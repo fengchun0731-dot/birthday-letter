@@ -19,7 +19,7 @@
     .send-status{min-height:1.5em;margin:12px 0 0;text-align:center;color:#715447;font-size:10px;font-style:italic;letter-spacing:.04em}
     .page3 .photo{animation:polaroid-in .9s cubic-bezier(.2,.8,.25,1) both}
     @keyframes polaroid-in{0%{opacity:0;transform:translateY(-42px) scale(.92)}65%{opacity:1;transform:translateY(5px) scale(1.01)}100%{opacity:1;transform:translateY(0) scale(1)}}
-    .fortune-page,.result-page{display:flex;align-items:center;justify-content:center;flex-direction:column;padding:10%;text-align:center;opacity:0;pointer-events:none;transition:opacity .5s,transform .65s}.page4 .fortune-page{z-index:3;opacity:1;pointer-events:auto}.page5 .fortune-page{transform:rotateY(-155deg)}.page5 .result-page{z-index:3;opacity:1;pointer-events:auto}.oracle-kicker{margin:0 0 7%;font-size:9px;font-style:italic;letter-spacing:.25em;text-transform:uppercase}.butterfly{display:block;width:min(68%,360px);height:auto;filter:drop-shadow(0 13px 15px #57403138);transform-origin:50% 62%}.butterfly.shaking{animation:butterfly-shake .9s ease-in-out}.draw-button,.fortune-nav button{padding:7px 1px;border:0;border-bottom:1px solid #65534470;background:transparent;color:#654c42;font-size:11px;font-style:italic;letter-spacing:.12em;cursor:pointer}.draw-button{margin-top:5%}@keyframes butterfly-shake{0%,100%{transform:rotate(0) scale(1)}15%{transform:rotate(-4deg) scale(1.02)}30%{transform:rotate(4deg) scale(.99)}45%{transform:rotate(-3deg) scale(1.02)}60%{transform:rotate(3deg) scale(1)}75%{transform:rotate(-1deg) scale(1.01)}}.fortune-result{max-width:420px;margin:0;color:#66483f;font-family:"Segoe Print","Bradley Hand",cursive;font-size:clamp(20px,4.8vw,31px);font-weight:400;line-height:1.75}.fortune-mark{margin:0 0 10%;color:#806358;font-size:28px}.fortune-nav{display:flex;gap:22px;margin-top:14%}
+    .fortune-page,.result-page{display:flex;align-items:center;justify-content:center;flex-direction:column;padding:10%;text-align:center;opacity:0;pointer-events:none;transition:opacity .5s,transform .65s}.page4 .fortune-page{z-index:3;opacity:1;pointer-events:auto}.page5 .fortune-page{transform:rotateY(-155deg)}.page5 .result-page{z-index:3;opacity:1;pointer-events:auto}.oracle-kicker{margin:0 0 7%;font-size:9px;font-style:italic;letter-spacing:.25em;text-transform:uppercase}.butterfly{display:block;width:min(68%,360px);height:auto;filter:drop-shadow(0 13px 15px #57403138);transform-origin:50% 62%}.butterfly.shaking{animation:butterfly-shake .9s ease-in-out}.draw-button,.fortune-nav button{padding:7px 1px;border:0;border-bottom:1px solid #65534470;background:transparent;color:#654c42;font-size:11px;font-style:italic;letter-spacing:.12em;cursor:pointer}.draw-button{margin-top:5%}@keyframes butterfly-shake{0%,100%{transform:rotate(0) scale(1)}15%{transform:rotate(-4deg) scale(1.02)}30%{transform:rotate(4deg) scale(.99)}45%{transform:rotate(-3deg) scale(1.02)}60%{transform:rotate(3deg) scale(1)}75%{transform:rotate(-1deg) scale(1.01)}}.fortune-result{max-width:430px;color:#66483f}.fortune-result-zh{margin:0;font-family:"Songti SC","STSong","FangSong","STKaiti","KaiTi",serif;font-size:clamp(20px,4.6vw,29px);font-weight:400;line-height:1.9;letter-spacing:.08em}.fortune-result-en{margin:8% 0 0;color:#80685d;font-family:Georgia,"Times New Roman",serif;font-size:clamp(12px,2.5vw,16px);font-style:italic;line-height:1.75;letter-spacing:.035em}.fortune-mark{margin:0 0 10%;color:#806358;font-size:28px}.fortune-nav{display:flex;gap:22px;margin-top:14%}
     @media(max-width:620px){.inside{padding:0}.book{width:100vw;min-height:100svh;aspect-ratio:auto}.memory-page{padding:7vh 8vw 10vh}.upload-photo,.photo,.writing{width:min(84vw,480px);margin-right:auto;margin-left:auto}.writing{margin-top:5vh}.butterfly{width:min(72vw,360px)}}
   </style>
 </head>
@@ -60,7 +60,7 @@
         </div>
         <div class="result-page">
           <p class="fortune-mark">✦</p>
-          <p class="fortune-result" id="fortune-result"></p>
+          <div class="fortune-result"><p class="fortune-result-zh" id="fortune-result-zh" lang="zh-CN"></p><p class="fortune-result-en" id="fortune-result-en" lang="en"></p></div>
           <div class="fortune-nav"><button id="draw-again" type="button">draw again</button><button id="result-close" type="button">close</button></div>
         </div>
       </div>
@@ -95,24 +95,24 @@
       }
     });
     const blessings=[
-      "你会在最普通的一天里，忽然收到很久以前许下的愿望。",
-      "这一岁，会有人认真听懂你的言外之意，也珍惜你的欲言又止。",
-      "你走过的弯路会悄悄开花，替未来的你照亮一小段路。",
-      "新的故事正在靠近，它温柔、明亮，而且恰好与你有关。",
-      "你会比想象中更自由，也会被比想象中更多的人温柔记住。",
-      "那些没有说出口的期待，会换一种更好的方式来到你身边。",
-      "今年的风会偏向你，把好消息一件一件送进你的怀里。",
-      "你不用追赶月亮，因为属于你的光正在慢慢亮起来。",
-      "会有一场恰到好处的相遇，让你重新相信生活藏着惊喜。",
-      "新的一岁，愿你被坚定选择，也永远保有转身离开的勇气。"
+      {zh:"你会在最普通的一天里，忽然收到很久以前许下的愿望。",en:"On an ordinary day, a long-ago wish will quietly find its way back to you."},
+      {zh:"这一岁，会有人认真听懂你的言外之意，也珍惜你的欲言又止。",en:"Someone will understand the words you leave unspoken, and treasure every gentle pause."},
+      {zh:"你走过的弯路会悄悄开花，替未来的你照亮一小段路。",en:"The winding roads behind you will bloom, lighting a little of the way ahead."},
+      {zh:"新的故事正在靠近，它温柔、明亮，而且恰好与你有关。",en:"A new story is drawing near—tender, luminous, and beautifully meant for you."},
+      {zh:"你会比想象中更自由，也会被比想象中更多的人温柔记住。",en:"You will become freer than you imagined, and be remembered more tenderly than you know."},
+      {zh:"那些没有说出口的期待，会换一种更好的方式来到你身边。",en:"The hopes you never voiced will return to you in a lovelier form."},
+      {zh:"今年的风会偏向你，把好消息一件一件送进你的怀里。",en:"This year, the wind will lean your way and carry good news into your arms."},
+      {zh:"你不用追赶月亮，因为属于你的光正在慢慢亮起来。",en:"You need not chase the moon; the light meant for you is already beginning to glow."},
+      {zh:"会有一场恰到好处的相遇，让你重新相信生活藏着惊喜。",en:"A perfectly timed encounter will remind you that life still keeps beautiful surprises."},
+      {zh:"新的一岁，愿你被坚定选择，也永远保有转身离开的勇气。",en:"In this new year of you, may you be chosen with certainty and remain brave enough to walk away."}
     ];
-    const butterfly=$("#butterfly"),fortuneResult=$("#fortune-result");
+    const butterfly=$("#butterfly"),fortuneResultZh=$("#fortune-result-zh"),fortuneResultEn=$("#fortune-result-en");
     $("#to-fortune").onclick=()=>setPage("page4");
     $("#fortune-back").onclick=()=>setPage("page3");
     $("#draw").onclick=()=>{
       if(butterfly.classList.contains("shaking"))return;
       butterfly.classList.add("shaking");
-      setTimeout(()=>{fortuneResult.textContent=blessings[Math.floor(Math.random()*blessings.length)];butterfly.classList.remove("shaking");setPage("page5")},900);
+      setTimeout(()=>{const blessing=blessings[Math.floor(Math.random()*blessings.length)];fortuneResultZh.textContent=blessing.zh;fortuneResultEn.textContent=blessing.en;butterfly.classList.remove("shaking");setPage("page5")},900);
     };
     $("#draw-again").onclick=()=>setPage("page4");
     $("#result-close").onclick=closeAll;
