@@ -54,7 +54,7 @@
   </main>
   <script>
     const $=s=>document.querySelector(s),site=$("#site"),book=$("#book"),photo=$("#photo"),preview=$("#preview"),picker=$("#picker"),note=$("#note"),replace=$("#replace"),turn=$("#turn");
-    $("#open").onclick=()=>site.classList.add("is-open");turn.onclick=()=>book.classList.add("page3");$("#back").onclick=()=>book.classList.remove("page3");function closeAll(){site.classList.remove("is-open");book.classList.remove("page3")}$("#close").onclick=closeAll;$("#close2").onclick=closeAll;
+    $("#open").onclick=async()=>{site.classList.add("is-open");if(music.paused){try{await music.play();musicPlayer.classList.add("playing");musicPlayer.classList.remove("paused");musicPlayer.setAttribute("aria-label","pause music")}catch(error){}}};turn.onclick=()=>book.classList.add("page3");$("#back").onclick=()=>book.classList.remove("page3");function closeAll(){site.classList.remove("is-open");book.classList.remove("page3")}$("#close").onclick=closeAll;$("#close2").onclick=closeAll;
     function show(src){preview.src=photo.src=src;preview.hidden=photo.hidden=false;picker.hidden=true;replace.hidden=turn.hidden=false}
     function load(file){if(!file)return;const r=new FileReader;r.onload=()=>{const im=new Image;im.onload=()=>{const s=Math.min(1,1600/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);show(c.toDataURL("image/jpeg",.88))};im.src=r.result};r.readAsDataURL(file)}
     $("#file").onchange=e=>load(e.target.files[0]);$("#file2").onchange=e=>load(e.target.files[0]);
