@@ -26,8 +26,8 @@
 <body>
   <div class="music-dish">
     <button class="music-player" id="music-player" type="button" aria-label="play music" title="play / pause">
-      <img class="dish-frame" src="player-frame.png" alt="">
-      <img class="dish-cover" id="music-cover" src="music-cover.jpg" alt="">
+      <img class="dish-frame" src="player-frame.webp" alt="" decoding="async">
+      <img class="dish-cover" id="music-cover" src="music-cover.webp" alt="" decoding="async">
     </button>
     <button class="music-next" id="music-next" type="button" aria-label="next song" title="change song">›</button>
   </div>
@@ -58,7 +58,7 @@
         </div>
         <div class="fortune-page">
           <p class="oracle-kicker">a birthday oracle</p>
-          <img class="butterfly" id="butterfly" src="butterfly.png" alt="Golden butterfly">
+          <img class="butterfly" id="butterfly" src="butterfly.webp" alt="Golden butterfly" loading="lazy" decoding="async">
           <button class="draw-button" id="draw" type="button">draw a blessing</button>
           <div class="fortune-nav"><button id="fortune-back" type="button">turn back</button></div>
         </div>
@@ -122,8 +122,8 @@
     $("#result-close").onclick=closeAll;
     const music=$("#music"),musicPlayer=$("#music-player"),musicCover=$("#music-cover"),musicNext=$("#music-next");
     const tracks=[
-      {src:"moonlight-romance.ogg",cover:"music-cover.jpg",start:2},
-      {src:"valentine.ogg",cover:"valentine-cover.jpg",start:0}
+      {src:"moonlight-romance.ogg",cover:"music-cover.webp",start:2},
+      {src:"valentine.ogg",cover:"valentine-cover.webp",start:0}
     ];
     let trackIndex=0;
     const currentTrack=()=>tracks[trackIndex];
