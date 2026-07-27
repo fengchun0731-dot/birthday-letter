@@ -9,7 +9,7 @@
     .site{min-height:100svh;overflow:hidden}.cover,.inside{position:absolute;inset:0;min-height:100svh}.cover{z-index:3;overflow:hidden;background:#2a1116;transition:.4s}.cover:before{content:"";position:absolute;inset:0;background:url("birthday-cover.jpg") center/cover no-repeat;filter:saturate(.88) brightness(.92)}
     .birthday-line{position:absolute;top:max(34px,7vh);left:50%;width:90%;margin:0;transform:translateX(-50%);color:#782b3d;text-align:center;font-size:clamp(12px,2.2vw,18px);font-style:italic;letter-spacing:.16em;text-transform:uppercase;text-shadow:0 1px 0 #f5e8dc80}
     .open{position:absolute;left:50%;bottom:max(42px,7vh);transform:translateX(-50%);padding:10px 2px;border:0;border-bottom:1px solid #f8ece08c;background:transparent;color:#f4e9df;font-size:11px;font-style:italic;letter-spacing:.13em;cursor:pointer}
-    .music-player{position:fixed;z-index:8;top:max(18px,env(safe-area-inset-top));right:18px;width:52px;height:52px;padding:4px;border:1px solid #d6b9a780;border-radius:50%;background:#743342;box-shadow:0 5px 18px #2b11184d;cursor:pointer}.music-player img{display:block;width:100%;height:100%;border-radius:50%;object-fit:cover}.music-player:after{content:"▶";position:absolute;inset:0;display:grid;place-items:center;border-radius:50%;background:#481b2570;color:#fff7ef;font-size:13px;text-indent:2px}.music-player.playing img{animation:record-spin 7s linear infinite}.music-player.playing:after{content:"Ⅱ";text-indent:0}.music-player.paused img{animation-play-state:paused}@keyframes record-spin{to{transform:rotate(360deg)}}
+    .music-dish{position:fixed;z-index:8;top:max(10px,env(safe-area-inset-top));right:8px;width:132px;height:88px;filter:drop-shadow(0 5px 8px #2b111838)}.music-player{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;background:transparent;cursor:pointer}.dish-frame{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}.dish-cover{position:absolute;left:50%;top:50%;width:44%;aspect-ratio:1;transform:translate(-50%,-50%);border:1px solid #f5efe6;border-radius:50%;object-fit:cover;box-shadow:inset 0 0 0 2px #8d766152}.music-player:after{content:"▶";position:absolute;left:50%;top:50%;display:grid;width:44%;aspect-ratio:1;place-items:center;transform:translate(-50%,-50%);border-radius:50%;background:#38221e47;color:#fffdf8;font-size:11px;text-indent:2px;transition:.25s}.music-player.playing .dish-cover{animation:record-spin 8s linear infinite}.music-player.playing:after{content:"Ⅱ";text-indent:0;opacity:.66}.music-player.paused .dish-cover{animation-play-state:paused}.music-next{position:absolute;right:2px;bottom:-3px;width:23px;height:23px;padding:0;border:1px solid #c9b9a6;border-radius:50%;background:#f1e9dc;color:#71584e;font-family:Georgia,serif;font-size:17px;line-height:20px;box-shadow:0 2px 7px #2b11182e;cursor:pointer}.music-next:active{transform:scale(.92)}@keyframes record-spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
     .inside{display:grid;place-items:center;overflow:auto;padding:18px;background:#9e8e78;opacity:0;transition:.4s}.is-open .cover{visibility:hidden;opacity:0;pointer-events:none}.is-open .inside{opacity:1}
     .book{position:relative;width:min(94vw,620px);aspect-ratio:454/726;perspective:1800px}.upload-page,.memory-page,.fortune-page,.result-page{position:absolute;inset:0;overflow:auto;box-shadow:0 18px 50px #271a1638;background:linear-gradient(#e8d5b2b8,#ddc79fba),url("birthday-inner.jpg") center/cover}
     .upload-page{z-index:4;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:10%;transform-origin:left;transition:transform .75s,opacity .55s}.page3 .upload-page,.page4 .upload-page,.page5 .upload-page{transform:rotateY(-165deg);opacity:0;pointer-events:none}.memory-page{z-index:3;padding:8% 9% 12%;transition:opacity .45s,transform .65s;transform-origin:left}.page4 .memory-page,.page5 .memory-page{opacity:0;transform:rotateY(-155deg);pointer-events:none}
@@ -20,13 +20,17 @@
     .page3 .photo{animation:polaroid-in .9s cubic-bezier(.2,.8,.25,1) both}
     @keyframes polaroid-in{0%{opacity:0;transform:translateY(-42px) scale(.92)}65%{opacity:1;transform:translateY(5px) scale(1.01)}100%{opacity:1;transform:translateY(0) scale(1)}}
     .fortune-page,.result-page{display:flex;align-items:center;justify-content:center;flex-direction:column;padding:10%;text-align:center;opacity:0;pointer-events:none;transition:opacity .5s,transform .65s}.page4 .fortune-page{z-index:3;opacity:1;pointer-events:auto}.page5 .fortune-page{transform:rotateY(-155deg)}.page5 .result-page{z-index:3;opacity:1;pointer-events:auto}.oracle-kicker{margin:0 0 7%;font-size:9px;font-style:italic;letter-spacing:.25em;text-transform:uppercase}.butterfly{display:block;width:min(68%,360px);height:auto;filter:drop-shadow(0 13px 15px #57403138);transform-origin:50% 62%;will-change:transform,filter}.butterfly.shaking{animation:butterfly-draw 1.4s cubic-bezier(.3,.7,.25,1)}.draw-button,.fortune-nav button{padding:7px 1px;border:0;border-bottom:1px solid #65534470;background:transparent;color:#654c42;font-size:11px;font-style:italic;letter-spacing:.12em;cursor:pointer}.draw-button{margin-top:5%}@keyframes butterfly-draw{0%{transform:translateY(0) scale(1);filter:drop-shadow(0 13px 15px #57403138)}24%{transform:translateY(-5px) rotate(-.6deg) scaleX(.985) scaleY(1.01)}45%{transform:translateY(-11px) rotate(.5deg) scaleX(1.018) scaleY(.995);filter:drop-shadow(0 18px 20px #b08a6260)}66%{transform:translateY(-14px) rotate(-.25deg) scaleX(.992) scaleY(1.012);filter:drop-shadow(0 20px 24px #c3a27878)}82%{transform:translateY(-7px) scaleX(1.008) scaleY(1)}100%{transform:translateY(0) scale(1);filter:drop-shadow(0 13px 15px #57403138)}}.fortune-result{max-width:430px;color:#66483f}.fortune-result-zh{margin:0;font-family:"Songti SC","STSong","FangSong","STKaiti","KaiTi",serif;font-size:clamp(20px,4.6vw,29px);font-weight:400;line-height:1.9;letter-spacing:.08em}.fortune-result-en{margin:8% 0 0;color:#80685d;font-family:Georgia,"Times New Roman",serif;font-size:clamp(12px,2.5vw,16px);font-style:italic;line-height:1.75;letter-spacing:.035em}.fortune-mark{margin:0 0 10%;color:#806358;font-size:28px}.fortune-nav{display:flex;gap:22px;margin-top:14%}
-    @media(max-width:620px){.inside{padding:0}.book{width:100vw;min-height:100svh;aspect-ratio:auto}.memory-page{padding:7vh 8vw 10vh}.upload-photo,.photo,.writing{width:min(84vw,480px);margin-right:auto;margin-left:auto}.writing{margin-top:5vh}.butterfly{width:min(72vw,360px)}}
+    @media(max-width:620px){.music-dish{top:max(7px,env(safe-area-inset-top));right:3px;width:112px;height:75px}.inside{padding:0}.book{width:100vw;min-height:100svh;aspect-ratio:auto}.memory-page{padding:7vh 8vw 10vh}.upload-photo,.photo,.writing{width:min(84vw,480px);margin-right:auto;margin-left:auto}.writing{margin-top:5vh}.butterfly{width:min(72vw,360px)}}
   </style>
 </head>
 <body>
-  <button class="music-player" id="music-player" type="button" aria-label="play music" title="play / pause">
-    <img src="music-cover.jpg" alt="">
-  </button>
+  <div class="music-dish">
+    <button class="music-player" id="music-player" type="button" aria-label="play music" title="play / pause">
+      <img class="dish-frame" src="player-frame.png" alt="">
+      <img class="dish-cover" id="music-cover" src="music-cover.jpg" alt="">
+    </button>
+    <button class="music-next" id="music-next" type="button" aria-label="next song" title="change song">›</button>
+  </div>
   <audio id="music" src="moonlight-romance.ogg" preload="auto" autoplay></audio>
   <main class="site" id="site">
     <section class="cover"><p class="birthday-line">Happy Birthday · A Letter For You</p><button class="open" id="open">open the letter</button></section>
@@ -116,19 +120,28 @@
     };
     $("#draw-again").onclick=()=>setPage("page4");
     $("#result-close").onclick=closeAll;
-    const music=$("#music"),musicPlayer=$("#music-player");
-    const musicStart=4;
-    music.addEventListener("loadedmetadata",async()=>{if(music.duration>musicStart)music.currentTime=musicStart;try{await music.play();musicPlayer.classList.add("playing");musicPlayer.setAttribute("aria-label","pause music")}catch(error){}});
-    music.addEventListener("ended",async()=>{music.currentTime=musicStart;try{await music.play()}catch(error){}});
-    document.addEventListener("pointerdown",async event=>{if(event.target.closest("#music-player"))return;if(music.paused){try{await music.play();musicPlayer.classList.add("playing");musicPlayer.classList.remove("paused");musicPlayer.setAttribute("aria-label","pause music")}catch(error){}}},{once:true});
+    const music=$("#music"),musicPlayer=$("#music-player"),musicCover=$("#music-cover"),musicNext=$("#music-next");
+    const tracks=[
+      {src:"moonlight-romance.ogg",cover:"music-cover.jpg",start:2},
+      {src:"valentine.ogg",cover:"valentine-cover.jpg",start:0}
+    ];
+    let trackIndex=0;
+    const currentTrack=()=>tracks[trackIndex];
+    const showPlaying=()=>{musicPlayer.classList.add("playing");musicPlayer.classList.remove("paused");musicPlayer.setAttribute("aria-label","pause music")};
+    const tryPlay=async()=>{try{await music.play();showPlaying()}catch(error){}};
+    const loadTrack=async(index,play=true)=>{trackIndex=index;const track=currentTrack();music.src=track.src;musicCover.src=track.cover;music.load();music.addEventListener("loadedmetadata",()=>{if(music.duration>track.start)music.currentTime=track.start;if(play)tryPlay()},{once:true})};
+    music.addEventListener("loadedmetadata",async()=>{const track=currentTrack();if(music.duration>track.start)music.currentTime=track.start;await tryPlay()},{once:true});
+    music.addEventListener("ended",async()=>{music.currentTime=currentTrack().start;await tryPlay()});
+    document.addEventListener("pointerdown",async event=>{if(event.target.closest(".music-dish"))return;if(music.paused)await tryPlay()},{once:true});
     musicPlayer.onclick=async()=>{
       if(music.paused){
-        try{await music.play();musicPlayer.classList.add("playing");musicPlayer.classList.remove("paused");musicPlayer.setAttribute("aria-label","pause music")}
+        try{await music.play();showPlaying()}
         catch(error){musicPlayer.title="tap again to play"}
       }else{
         music.pause();musicPlayer.classList.add("paused");musicPlayer.setAttribute("aria-label","play music");
       }
     };
+    musicNext.onclick=async event=>{event.stopPropagation();await loadTrack((trackIndex+1)%tracks.length,true)};
   </script>
 </body>
 </html>
