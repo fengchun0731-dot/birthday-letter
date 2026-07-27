@@ -24,7 +24,7 @@
   <button class="music-player" id="music-player" type="button" aria-label="play music" title="play / pause">
     <img src="music-cover.jpg" alt="">
   </button>
-  <audio id="music" src="moonlight-romance.ogg" preload="metadata"></audio>
+  <audio id="music" src="moonlight-romance.ogg" preload="auto" autoplay></audio>
   <main class="site" id="site">
     <section class="cover"><p class="birthday-line">Happy Birthday · A Letter For You</p><button class="open" id="open">open the letter</button></section>
     <section class="inside">
@@ -80,9 +80,10 @@
       }
     });
     const music=$("#music"),musicPlayer=$("#music-player");
-    const musicStart=9;
-    music.addEventListener("loadedmetadata",()=>{if(music.duration>musicStart)music.currentTime=musicStart});
+    const musicStart=4;
+    music.addEventListener("loadedmetadata",async()=>{if(music.duration>musicStart)music.currentTime=musicStart;try{await music.play();musicPlayer.classList.add("playing");musicPlayer.setAttribute("aria-label","pause music")}catch(error){}});
     music.addEventListener("ended",async()=>{music.currentTime=musicStart;try{await music.play()}catch(error){}});
+    document.addEventListener("pointerdown",async event=>{if(event.target.closest("#music-player"))return;if(music.paused){try{await music.play();musicPlayer.classList.add("playing");musicPlayer.classList.remove("paused");musicPlayer.setAttribute("aria-label","pause music")}catch(error){}}},{once:true});
     musicPlayer.onclick=async()=>{
       if(music.paused){
         try{await music.play();musicPlayer.classList.add("playing");musicPlayer.classList.remove("paused");musicPlayer.setAttribute("aria-label","pause music")}
