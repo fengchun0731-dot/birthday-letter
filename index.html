@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>A Birthday Letter</title>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#2a1116;color:#55473e}body,button,textarea{font-family:Georgia,"Times New Roman",serif}
+    .site{min-height:100svh;overflow:hidden}.cover,.inside{position:absolute;inset:0;min-height:100svh}.cover{z-index:3;overflow:hidden;background:#2a1116;transition:.4s}.cover:before{content:"";position:absolute;inset:0;background:url("birthday-cover.jpg") center/cover no-repeat;filter:saturate(.88) brightness(.92)}
+    .birthday-line{position:absolute;top:max(34px,7vh);left:50%;width:90%;margin:0;transform:translateX(-50%);color:#782b3d;text-align:center;font-size:clamp(12px,2.2vw,18px);font-style:italic;letter-spacing:.16em;text-transform:uppercase;text-shadow:0 1px 0 #f5e8dc80}
+    .open{position:absolute;left:50%;bottom:max(42px,7vh);transform:translateX(-50%);padding:10px 2px;border:0;border-bottom:1px solid #f8ece08c;background:transparent;color:#f4e9df;font-size:11px;font-style:italic;letter-spacing:.13em;cursor:pointer}
+    .inside{display:grid;place-items:center;overflow:auto;padding:18px;background:#9e8e78;opacity:0;transition:.4s}.is-open .cover{visibility:hidden;opacity:0;pointer-events:none}.is-open .inside{opacity:1}
+    .book{position:relative;width:min(94vw,620px);aspect-ratio:454/726;perspective:1800px}.upload-page,.memory-page{position:absolute;inset:0;overflow:auto;box-shadow:0 18px 50px #271a1638;background:linear-gradient(#e8d5b2b8,#ddc79fba),url("birthday-inner.jpg") center/cover}
+    .upload-page{z-index:2;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:10%;transform-origin:left;transition:transform .75s,opacity .55s}.page3 .upload-page{transform:rotateY(-165deg);opacity:0;pointer-events:none}.memory-page{padding:8% 9% 12%}
+    .upload-photo,.photo,.writing{position:relative;width:100%;aspect-ratio:4/3;border:1px solid #715e473d;background:#e9d7baf2;box-shadow:0 8px 20px #5a483226}.upload-photo,.photo{padding:7px}.upload-photo img,.upload-photo label,.photo img{display:flex;width:100%;height:100%;align-items:center;justify-content:center;flex-direction:column}.upload-photo img,.photo img{object-fit:cover;filter:saturate(.82) contrast(.94)}.upload-photo label{cursor:pointer;font-size:12px;font-style:italic}.upload-photo small{margin-top:7px;font-size:8px;letter-spacing:.12em}
+    .writing{margin-top:7%;padding:8%}.writing textarea{width:100%;height:100%;resize:none;outline:0;border:0;background:transparent;color:#5c493e;font-family:"Segoe Print","Bradley Hand",cursive;font-size:clamp(13px,3vw,18px);line-height:1.75}input,[hidden]{display:none!important}
+    .actions,.upload-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:18px;margin-top:8%}.actions label,.actions button,.upload-actions label,.upload-actions button{padding:5px 0;border:0;border-bottom:1px solid #5a483a59;background:transparent;color:#65554b;font-size:9px;font-style:italic;cursor:pointer}
+    @media(max-width:620px){.inside{padding:0}.book{width:100vw;min-height:100svh;aspect-ratio:auto}.memory-page{padding:7vh 8vw 10vh}.upload-photo,.photo,.writing{width:min(84vw,480px);margin-right:auto;margin-left:auto}.writing{margin-top:5vh}}
+  </style>
+</head>
+<body>
+  <main class="site" id="site">
+    <section class="cover"><p class="birthday-line">Happy Birthday · A Letter For You</p><button class="open" id="open">open the letter</button></section>
+    <section class="inside">
+      <div class="book" id="book">
+        <div class="upload-page">
+          <div class="upload-photo">
+            <label id="picker"><span>add a photograph</span><small>landscape · 4:3</small><input id="file" type="file" accept="image/*"></label>
+            <img id="preview" alt="Selected birthday memory" hidden>
+          </div>
+          <div class="upload-actions"><label id="replace" hidden>change photo<input id="file2" type="file" accept="image/*"></label><button id="turn" hidden>turn the page</button><button id="close2">close</button></div>
+        </div>
+        <div class="memory-page">
+          <div class="photo"><img id="photo" alt="A birthday memory" hidden></div>
+          <div class="writing"><textarea id="note" placeholder="write something here…"></textarea></div>
+          <div class="actions"><button id="back">turn back</button><button id="close">close</button></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script>
+    const $=s=>document.querySelector(s),site=$("#site"),book=$("#book"),photo=$("#photo"),preview=$("#preview"),picker=$("#picker"),note=$("#note"),replace=$("#replace"),turn=$("#turn");
+    $("#open").onclick=()=>site.classList.add("is-open");turn.onclick=()=>book.classList.add("page3");$("#back").onclick=()=>book.classList.remove("page3");function closeAll(){site.classList.remove("is-open");book.classList.remove("page3")}$("#close").onclick=closeAll;$("#close2").onclick=closeAll;
+    function show(src){preview.src=photo.src=src;preview.hidden=photo.hidden=false;picker.hidden=true;replace.hidden=turn.hidden=false}
+    function load(file){if(!file)return;const r=new FileReader;r.onload=()=>{const im=new Image;im.onload=()=>{const s=Math.min(1,1600/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);show(c.toDataURL("image/jpeg",.88))};im.src=r.result};r.readAsDataURL(file)}
+    $("#file").onchange=e=>load(e.target.files[0]);$("#file2").onchange=e=>load(e.target.files[0]);
+  </script>
+</body>
+</html>
