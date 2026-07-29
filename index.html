@@ -123,10 +123,10 @@
     const music=$("#music"),musicPlayer=$("#music-player"),musicCover=$("#music-cover"),musicNext=$("#music-next");
     const tracks=[
       {src:"moonlight-romance.ogg",cover:"music-cover.webp",start:2},
-      {src:"valentine.ogg",cover:"valentine-cover.webp",start:0}
+      {src:"valentine-mobile.mp3",cover:"valentine-cover.webp",start:0}
     ];
     let valentineReady=false;
-    const warmValentine=()=>{if(valentineReady)return;valentineReady=true;fetch("valentine.ogg",{cache:"force-cache"}).catch(()=>{})};
+    const warmValentine=()=>{if(valentineReady)return;valentineReady=true;fetch("valentine-mobile.mp3",{cache:"force-cache"}).catch(()=>{})};
     window.addEventListener("load",()=>setTimeout(warmValentine,1800),{once:true});
     let trackIndex=0;
     const currentTrack=()=>tracks[trackIndex];
