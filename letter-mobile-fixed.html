@@ -82,7 +82,7 @@
     $("#file").onchange=e=>load(e.target.files[0]);$("#file2").onchange=e=>load(e.target.files[0]);
     const downloadBtn=$("#download");
     function imageReady(src){return new Promise((resolve,reject)=>{const image=new Image;image.onload=()=>resolve(image);image.onerror=reject;image.src=src})}
-    function drawCover(ctx,image,x,y,w,h){const scale=Math.max(w/image.width,h/image.height),dw=image.width*scale,dh=image.height*scale;ctx.drawImage(image,x+(w-dw)/2,y+(h-dh)/2,dw,dh)}
+    function drawCover(ctx,image,x,y,w,h){const scale=Math.max(w/image.width,h/image.height),dw=image.width*scale,dh=image.height*scale;ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();ctx.drawImage(image,x+(w-dw)/2,y+(h-dh)/2,dw,dh);ctx.restore()}
     function drawContain(ctx,image,x,y,w,h){const scale=Math.min(w/image.width,h/image.height),dw=image.width*scale,dh=image.height*scale;ctx.drawImage(image,x+(w-dw)/2,y+(h-dh)/2,dw,dh)}
     function drawLetterText(ctx,text,x,y,maxWidth,lineHeight){
       const paragraphs=(text||"").split(/\n/);
@@ -103,15 +103,15 @@
         const [pageTexture,photoPaper,postcard,userPhoto]=await Promise.all([
           imageReady("birthday-inner.jpg"),imageReady("photo-paper.webp"),imageReady("postcard-writing-20260729.webp"),imageReady(photo.src)
         ]);
-        const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d"),W=1920,H=1080;
+        const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d"),W=1080,H=1920;
         canvas.width=W;canvas.height=H;
         ctx.fillStyle="#e2cda5";ctx.fillRect(0,0,W,H);ctx.globalAlpha=.58;drawCover(ctx,pageTexture,0,0,W,H);ctx.globalAlpha=1;
-        const photoX=80,letterX=1040,y=240,w=800,h=600,pad=18;
-        drawCover(ctx,photoPaper,photoX,y,w,h);
-        drawContain(ctx,userPhoto,photoX+pad,y+pad,w-pad*2,h-pad*2);
-        drawCover(ctx,postcard,letterX,y,w,h);
+        const x=135,photoY=170,letterY=1060,w=810,h=608,pad=18;
+        drawCover(ctx,photoPaper,x,photoY,w,h);
+        drawContain(ctx,userPhoto,x+pad,photoY+pad,w-pad*2,h-pad*2);
+        drawCover(ctx,postcard,x,letterY,w,h);
         ctx.fillStyle="#563e2f";ctx.font='21px "Songti SC","Noto Serif SC",serif';ctx.textBaseline="top";
-        drawLetterText(ctx,note.value,letterX+w*.09,y+h*.29,w*.82,34);
+        drawLetterText(ctx,note.value,x+w*.09,letterY+h*.29,w*.82,34);
         const blob=await new Promise(resolve=>canvas.toBlob(resolve,"image/jpeg",.94));
         const file=new File([blob],"birthday-letter.jpg",{type:"image/jpeg"});
         if(navigator.canShare&&navigator.canShare({files:[file]}))await navigator.share({files:[file],title:"A Birthday Letter"});
