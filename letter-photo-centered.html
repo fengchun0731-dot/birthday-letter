@@ -55,7 +55,7 @@
             <input type="text" name="_honey" tabindex="-1" autocomplete="off">
             <div class="writing"><textarea id="note" name="匿名留言" required maxlength="3000" placeholder="write something here…"></textarea></div>
             <p class="send-status" id="send-status"></p>
-            <div class="actions"><button type="button" id="back">turn back</button><button type="submit" id="send">send anonymously</button><button type="button" id="to-fortune">draw a blessing</button><button type="button" id="close">close</button></div>
+            <div class="actions"><button type="button" id="back">turn back</button><button type="button" id="download">download</button><button type="submit" id="send">send anonymously</button><button type="button" id="to-fortune">draw a blessing</button><button type="button" id="close">close</button></div>
           </form>
           <iframe name="submit-frame" title="anonymous letter submission"></iframe>
         </div>
@@ -80,6 +80,51 @@
     function show(src){preview.src=photo.src=src;preview.hidden=photo.hidden=false;picker.hidden=true;replace.hidden=turn.hidden=false}
     function load(file){if(!file)return;const r=new FileReader;r.onload=()=>{const im=new Image;im.onload=()=>{const s=Math.min(1,1600/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);show(c.toDataURL("image/jpeg",.88))};im.src=r.result};r.readAsDataURL(file)}
     $("#file").onchange=e=>load(e.target.files[0]);$("#file2").onchange=e=>load(e.target.files[0]);
+    const downloadBtn=$("#download");
+    function imageReady(src){return new Promise((resolve,reject)=>{const image=new Image;image.onload=()=>resolve(image);image.onerror=reject;image.src=src})}
+    function drawCover(ctx,image,x,y,w,h){const scale=Math.max(w/image.width,h/image.height),dw=image.width*scale,dh=image.height*scale;ctx.drawImage(image,x+(w-dw)/2,y+(h-dh)/2,dw,dh)}
+    function drawContain(ctx,image,x,y,w,h){const scale=Math.min(w/image.width,h/image.height),dw=image.width*scale,dh=image.height*scale;ctx.drawImage(image,x+(w-dw)/2,y+(h-dh)/2,dw,dh)}
+    function drawLetterText(ctx,text,x,y,maxWidth,lineHeight){
+      const paragraphs=(text||"").split(/\n/);
+      paragraphs.forEach(paragraph=>{
+        let line="";
+        Array.from(paragraph).forEach(character=>{
+          const test=line+character;
+          if(line&&ctx.measureText(test).width>maxWidth){ctx.fillText(line,x,y);line=character;y+=lineHeight}else line=test
+        });
+        if(line)ctx.fillText(line,x,y);
+        y+=lineHeight
+      })
+    }
+    async function makeDownload(){
+      if(photo.hidden||!photo.src){downloadBtn.textContent="add a photo first";setTimeout(()=>downloadBtn.textContent="download",1400);return}
+      downloadBtn.disabled=true;downloadBtn.textContent="preparing…";
+      try{
+        const [pageTexture,photoPaper,postcard,userPhoto]=await Promise.all([
+          imageReady("birthday-inner.jpg"),imageReady("photo-paper.webp"),imageReady("postcard-writing-20260729.webp"),imageReady(photo.src)
+        ]);
+        const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d"),W=1200,H=1900;
+        canvas.width=W;canvas.height=H;
+        ctx.fillStyle="#e2cda5";ctx.fillRect(0,0,W,H);ctx.globalAlpha=.58;drawCover(ctx,pageTexture,0,0,W,H);ctx.globalAlpha=1;
+        const x=150,w=900,h=675,photoY=170,letterY=1010,pad=18;
+        drawCover(ctx,photoPaper,x,photoY,w,h);
+        drawContain(ctx,userPhoto,x+pad,photoY+pad,w-pad*2,h-pad*2);
+        drawCover(ctx,postcard,x,letterY,w,h);
+        ctx.fillStyle="#563e2f";ctx.font='24px "Songti SC","Noto Serif SC",serif';ctx.textBaseline="top";
+        drawLetterText(ctx,note.value,x+w*.09,letterY+h*.29,w*.82,39);
+        const blob=await new Promise(resolve=>canvas.toBlob(resolve,"image/jpeg",.94));
+        const file=new File([blob],"birthday-letter.jpg",{type:"image/jpeg"});
+        if(navigator.canShare&&navigator.canShare({files:[file]}))await navigator.share({files:[file],title:"A Birthday Letter"});
+        else{
+          const url=URL.createObjectURL(blob),link=document.createElement("a");
+          link.href=url;link.download=file.name;document.body.appendChild(link);link.click();link.remove();
+          setTimeout(()=>URL.revokeObjectURL(url),30000)
+        }
+        downloadBtn.textContent="saved";
+      }catch(error){downloadBtn.textContent="try again"}
+      finally{downloadBtn.disabled=false;setTimeout(()=>downloadBtn.textContent="download",1600)}
+    }
+    downloadBtn.onclick=makeDownload;
     const letterForm=$("#letter-form"),send=$("#send"),sendStatus=$("#send-status");
     letterForm.addEventListener("submit",async e=>{
       e.preventDefault();
