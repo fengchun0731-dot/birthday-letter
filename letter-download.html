@@ -30,11 +30,11 @@
   <div class="music-dish">
     <button class="music-player" id="music-player" type="button" aria-label="play music" title="play / pause">
       <img class="dish-frame" src="player-frame.webp" alt="" decoding="async">
-      <img class="dish-cover" id="music-cover" src="music-cover.webp" alt="" decoding="async">
+      <img class="dish-cover" id="music-cover" src="valentine-cover.webp" alt="" decoding="async">
     </button>
     <button class="music-next" id="music-next" type="button" aria-label="next song" title="change song">›</button>
   </div>
-  <audio id="music" src="moonlight-romance.ogg" preload="auto" autoplay></audio>
+  <audio id="music" src="valentine-mobile.mp3" preload="auto" autoplay></audio>
   <main class="site" id="site">
     <section class="cover"><p class="birthday-line">Happy Birthday · A Letter For You</p><button class="open" id="open">open the letter</button></section>
     <section class="inside">
@@ -103,15 +103,15 @@
         const [pageTexture,photoPaper,postcard,userPhoto]=await Promise.all([
           imageReady("birthday-inner.jpg"),imageReady("photo-paper.webp"),imageReady("postcard-writing-20260729.webp"),imageReady(photo.src)
         ]);
-        const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d"),W=1200,H=1900;
+        const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d"),W=1920,H=1080;
         canvas.width=W;canvas.height=H;
         ctx.fillStyle="#e2cda5";ctx.fillRect(0,0,W,H);ctx.globalAlpha=.58;drawCover(ctx,pageTexture,0,0,W,H);ctx.globalAlpha=1;
-        const x=150,w=900,h=675,photoY=170,letterY=1010,pad=18;
-        drawCover(ctx,photoPaper,x,photoY,w,h);
-        drawContain(ctx,userPhoto,x+pad,photoY+pad,w-pad*2,h-pad*2);
-        drawCover(ctx,postcard,x,letterY,w,h);
-        ctx.fillStyle="#563e2f";ctx.font='24px "Songti SC","Noto Serif SC",serif';ctx.textBaseline="top";
-        drawLetterText(ctx,note.value,x+w*.09,letterY+h*.29,w*.82,39);
+        const photoX=80,letterX=1040,y=240,w=800,h=600,pad=18;
+        drawCover(ctx,photoPaper,photoX,y,w,h);
+        drawContain(ctx,userPhoto,photoX+pad,y+pad,w-pad*2,h-pad*2);
+        drawCover(ctx,postcard,letterX,y,w,h);
+        ctx.fillStyle="#563e2f";ctx.font='21px "Songti SC","Noto Serif SC",serif';ctx.textBaseline="top";
+        drawLetterText(ctx,note.value,letterX+w*.09,y+h*.29,w*.82,34);
         const blob=await new Promise(resolve=>canvas.toBlob(resolve,"image/jpeg",.94));
         const file=new File([blob],"birthday-letter.jpg",{type:"image/jpeg"});
         if(navigator.canShare&&navigator.canShare({files:[file]}))await navigator.share({files:[file],title:"A Birthday Letter"});
@@ -170,8 +170,8 @@
     $("#result-close").onclick=closeAll;
     const music=$("#music"),musicPlayer=$("#music-player"),musicCover=$("#music-cover"),musicNext=$("#music-next");
     const tracks=[
-      {src:"moonlight-romance.ogg",cover:"music-cover.webp",start:2},
-      {src:"valentine-mobile.mp3",cover:"valentine-cover.webp",start:0}
+      {src:"valentine-mobile.mp3",cover:"valentine-cover.webp",start:0},
+      {src:"moonlight-romance.ogg",cover:"music-cover.webp",start:2}
     ];
     let valentineReady=false;
     const warmValentine=()=>{if(valentineReady)return;valentineReady=true;fetch("valentine-mobile.mp3",{cache:"force-cache"}).catch(()=>{})};
