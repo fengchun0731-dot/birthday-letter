@@ -96,10 +96,7 @@
         y+=lineHeight
       })
     }
-    async function makeDownload(){
-      if(photo.hidden||!photo.src){downloadBtn.textContent="add a photo first";setTimeout(()=>downloadBtn.textContent="download",1400);return}
-      downloadBtn.disabled=true;downloadBtn.textContent="preparing…";
-      try{
+    async function buildLetterImage(){
         const [pageTexture,photoPaper,postcard,userPhoto]=await Promise.all([
           imageReady("birthday-inner.jpg"),imageReady("photo-paper.webp"),imageReady("postcard-writing-20260729.webp"),imageReady(photo.src)
         ]);
@@ -116,6 +113,14 @@
         ctx.fillStyle=noteStyle.color||"#563e2f";ctx.font=`${fontSize}px ${noteStyle.fontFamily}`;ctx.textBaseline="top";
         drawLetterText(ctx,note.value,x+w*.09,letterY+h*.29,w*.82,Math.round(screenLineHeight*exportScale));
         const blob=await new Promise(resolve=>canvas.toBlob(resolve,"image/jpeg",.94));
+        if(!blob)throw new Error("image creation failed");
+        return blob
+    }
+    async function makeDownload(){
+      if(photo.hidden||!photo.src){downloadBtn.textContent="add a photo first";setTimeout(()=>downloadBtn.textContent="download",1400);return}
+      downloadBtn.disabled=true;downloadBtn.textContent="preparing…";
+      try{
+        const blob=await buildLetterImage();
         const file=new File([blob],"birthday-letter.jpg",{type:"image/jpeg"});
         if(navigator.canShare&&navigator.canShare({files:[file]}))await navigator.share({files:[file],title:"A Birthday Letter"});
         else{
@@ -132,12 +137,22 @@
     letterForm.addEventListener("submit",async e=>{
       e.preventDefault();
       if(!note.value.trim()){e.preventDefault();sendStatus.textContent="write a little something first";note.focus();return}
+      if(photo.hidden||!photo.src){sendStatus.textContent="add a photo first";return}
       send.disabled=true;sendStatus.textContent="sending…";
       try{
+        sendStatus.textContent="preparing your letter…";
+        const blob=await buildLetterImage();
+        const payload=new FormData();
+        payload.append("匿名留言",note.value.trim());
+        payload.append("_subject","收到一封带图片的生日匿名来信");
+        payload.append("_template","table");
+        payload.append("_captcha","false");
+        payload.append("attachment",new File([blob],"birthday-letter.jpg",{type:"image/jpeg"}));
+        sendStatus.textContent="sending…";
         const response=await fetch("https://formsubmit.co/ajax/6629cfc9a85e60bac93bbc85d405f893",{
           method:"POST",
-          headers:{"Content-Type":"application/json","Accept":"application/json"},
-          body:JSON.stringify({"匿名留言":note.value.trim(),"_subject":"收到一封生日匿名来信","_template":"table","_captcha":"false"})
+          headers:{"Accept":"application/json"},
+          body:payload
         });
         const result=await response.json();
         if(!response.ok||result.success===false)throw new Error("submission rejected");
