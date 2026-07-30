@@ -48,11 +48,12 @@
         </div>
         <div class="memory-page">
           <div class="photo"><img id="photo" alt="A birthday memory" hidden></div>
-          <form id="letter-form" action="https://formsubmit.co/6629cfc9a85e60bac93bbc85d405f893" method="POST">
+          <form id="letter-form" action="https://formsubmit.co/6629cfc9a85e60bac93bbc85d405f893" method="POST" enctype="multipart/form-data" target="submit-frame">
             <input type="hidden" name="_subject" value="收到一封生日匿名来信">
             <input type="hidden" name="_template" value="table">
             <input type="hidden" name="_captcha" value="false">
             <input type="text" name="_honey" tabindex="-1" autocomplete="off">
+            <input type="file" id="letter-attachment" name="attachment" accept="image/jpeg">
             <div class="writing"><textarea id="note" name="匿名留言" required maxlength="3000" placeholder="write something here…"></textarea></div>
             <p class="send-status" id="send-status"></p>
             <div class="actions"><button type="button" id="back">turn back</button><button type="button" id="download">download</button><button type="submit" id="send">send anonymously</button><button type="button" id="to-fortune">draw a blessing</button><button type="button" id="close">close</button></div>
@@ -133,7 +134,16 @@
       finally{downloadBtn.disabled=false;setTimeout(()=>downloadBtn.textContent="download",1600)}
     }
     downloadBtn.onclick=makeDownload;
-    const letterForm=$("#letter-form"),send=$("#send"),sendStatus=$("#send-status");
+    const letterForm=$("#letter-form"),send=$("#send"),sendStatus=$("#send-status"),letterAttachment=$("#letter-attachment"),submitFrame=document.querySelector('iframe[name="submit-frame"]');
+    let sendingLetter=false;
+    submitFrame.addEventListener("load",()=>{
+      if(!sendingLetter)return;
+      sendingLetter=false;
+      send.disabled=false;
+      sendStatus.textContent="your letter and picture have been sent anonymously";
+      note.value="";
+      letterAttachment.value=""
+    });
     letterForm.addEventListener("submit",async e=>{
       e.preventDefault();
       if(!note.value.trim()){e.preventDefault();sendStatus.textContent="write a little something first";note.focus();return}
@@ -142,25 +152,14 @@
       try{
         sendStatus.textContent="preparing your letter…";
         const blob=await buildLetterImage();
-        const payload=new FormData();
-        payload.append("匿名留言",note.value.trim());
-        payload.append("_subject","收到一封带图片的生日匿名来信");
-        payload.append("_template","table");
-        payload.append("_captcha","false");
-        payload.append("attachment",new File([blob],"birthday-letter.jpg",{type:"image/jpeg"}));
+        const transfer=new DataTransfer();
+        transfer.items.add(new File([blob],"birthday-letter.jpg",{type:"image/jpeg"}));
+        letterAttachment.files=transfer.files;
         sendStatus.textContent="sending…";
-        const response=await fetch("https://formsubmit.co/ajax/6629cfc9a85e60bac93bbc85d405f893",{
-          method:"POST",
-          headers:{"Accept":"application/json"},
-          body:payload
-        });
-        const result=await response.json();
-        if(!response.ok||result.success===false)throw new Error("submission rejected");
-        sendStatus.textContent="your letter has been sent anonymously";
-        note.value="";
+        sendingLetter=true;
+        letterForm.submit()
       }catch(error){
         sendStatus.textContent="not sent — please check the network and try again";
-      }finally{
         send.disabled=false;
       }
     });
