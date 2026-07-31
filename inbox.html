@@ -31,7 +31,7 @@
         status.textContent=data.letters.length?`共收到 ${data.letters.length} 封信`:"信箱还是空的";
         list.innerHTML=data.letters.map(letter=>`
           <article class="letter">
-            ${letter.imageUrl?`<img src="${letter.imageUrl}" alt="生日来信图片"><div class="letter-tools"><button class="save-image" type="button" data-image="${letter.imageUrl}">save image</button></div>`:""}
+            ${letter.imageUrl?`<img src="${letter.imageUrl}" alt="生日来信图片"><div class="letter-tools"><button class="save-image" type="button" data-image="${letter.imageUrl}">download</button></div>`:""}
             <div class="message">${safeText(letter.message)}</div>
             <div class="time">${new Date(letter.createdAt).toLocaleString("zh-CN",{hour12:false})}</div>
           </article>`).join("");
