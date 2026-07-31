@@ -8,7 +8,7 @@
   <style>
     *{box-sizing:border-box}body{margin:0;min-height:100svh;padding:24px 16px 60px;background:#ead8b6;color:#513c32;font-family:"Songti SC","STSong","FangSong",serif}
     main{width:min(760px,100%);margin:auto}h1{margin:18px 0 4px;text-align:center;color:#7b3140;font:italic 28px Georgia,serif;letter-spacing:.06em}header p{text-align:center;font-size:13px;opacity:.68}
-    #status{text-align:center;margin:48px 0;font-size:14px}.letter{margin:22px 0;padding:24px;background:#d2b78d;box-shadow:0 10px 30px #694d3530;border:1px solid #7c5f3d30}.letter img{display:block;width:100%;height:auto;margin-bottom:18px}.message{white-space:pre-wrap;font-size:17px;line-height:1.85}.time{margin-top:18px;text-align:right;font:italic 12px Georgia,serif;opacity:.62}
+    #status{text-align:center;margin:48px 0;font-size:14px}.letter{margin:22px 0;padding:24px;background:#d2b78d;box-shadow:0 10px 30px #694d3530;border:1px solid #7c5f3d30}.letter img{display:block;width:100%;height:auto;margin-bottom:12px}.message{white-space:pre-wrap;font-size:17px;line-height:1.85}.letter-tools{display:flex;justify-content:flex-end;margin:0 0 18px}.save-image{padding:5px 0;border:0;border-bottom:1px solid #684b3a66;background:transparent;color:#65483b;font:italic 12px Georgia,serif;cursor:pointer}.time{margin-top:18px;text-align:right;font:italic 12px Georgia,serif;opacity:.62}
   </style>
 </head>
 <body>
@@ -31,10 +31,28 @@
         status.textContent=data.letters.length?`共收到 ${data.letters.length} 封信`:"信箱还是空的";
         list.innerHTML=data.letters.map(letter=>`
           <article class="letter">
-            ${letter.imageUrl?`<img src="${letter.imageUrl}" alt="生日来信图片">`:""}
+            ${letter.imageUrl?`<img src="${letter.imageUrl}" alt="生日来信图片"><div class="letter-tools"><button class="save-image" type="button" data-image="${letter.imageUrl}">save image</button></div>`:""}
             <div class="message">${safeText(letter.message)}</div>
             <div class="time">${new Date(letter.createdAt).toLocaleString("zh-CN",{hour12:false})}</div>
-          </article>`).join("")
+          </article>`).join("");
+        list.querySelectorAll(".save-image").forEach(button=>button.addEventListener("click",async()=>{
+          const original=button.textContent;
+          button.disabled=true;button.textContent="preparing…";
+          try{
+            const imageResponse=await fetch(button.dataset.image);
+            const blob=await imageResponse.blob();
+            const file=new File([blob],"birthday-letter.jpg",{type:blob.type||"image/jpeg"});
+            if(navigator.canShare&&navigator.canShare({files:[file]})){
+              await navigator.share({files:[file],title:"A Birthday Letter"})
+            }else{
+              const url=URL.createObjectURL(blob),link=document.createElement("a");
+              link.href=url;link.download=file.name;document.body.appendChild(link);link.click();link.remove();
+              setTimeout(()=>URL.revokeObjectURL(url),30000)
+            }
+            button.textContent="saved"
+          }catch(error){button.textContent="press and hold the picture"}
+          finally{button.disabled=false;setTimeout(()=>button.textContent=original,1800)}
+        }))
       }catch(error){status.textContent="信箱暂时没有打开，请刷新再试"}
     }
     load();
