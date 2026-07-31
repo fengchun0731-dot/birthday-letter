@@ -144,6 +144,19 @@
         reader.readAsDataURL(blob)
       })
     }
+    async function makeInboxImage(blob){
+      const url=URL.createObjectURL(blob);
+      const source=await imageReady(url);
+      const canvas=document.createElement("canvas");
+      canvas.width=540;canvas.height=960;
+      canvas.getContext("2d").drawImage(source,0,0,canvas.width,canvas.height);
+      URL.revokeObjectURL(url);
+      return new Promise((resolve,reject)=>canvas.toBlob(
+        result=>result?resolve(result):reject(new Error("image compression failed")),
+        "image/jpeg",
+        .72
+      ))
+    }
     letterForm.addEventListener("submit",async e=>{
       e.preventDefault();
       if(!note.value.trim()){e.preventDefault();sendStatus.textContent="write a little something first";note.focus();return}
@@ -152,7 +165,7 @@
       try{
         sendStatus.textContent="preparing your letter…";
         const blob=await buildLetterImage();
-        const image=await blobToDataURL(blob);
+        const image=await blobToDataURL(await makeInboxImage(blob));
         sendStatus.textContent="sending…";
         const response=await fetch(inboxEndpoint,{
           method:"POST",
