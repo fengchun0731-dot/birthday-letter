@@ -134,16 +134,16 @@
       finally{downloadBtn.disabled=false;setTimeout(()=>downloadBtn.textContent="download",1600)}
     }
     downloadBtn.onclick=makeDownload;
-    const letterForm=$("#letter-form"),send=$("#send"),sendStatus=$("#send-status"),letterAttachment=$("#letter-attachment"),submitFrame=document.querySelector('iframe[name="submit-frame"]');
-    let sendingLetter=false;
-    submitFrame.addEventListener("load",()=>{
-      if(!sendingLetter)return;
-      sendingLetter=false;
-      send.disabled=false;
-      sendStatus.textContent="your letter and picture have been sent anonymously";
-      note.value="";
-      letterAttachment.value=""
-    });
+    const letterForm=$("#letter-form"),send=$("#send"),sendStatus=$("#send-status");
+    const inboxEndpoint="https://fengchun0731-d2g8m7mudec2f9975.service.tcloudbase.com/birthday-inbox-v2";
+    function blobToDataURL(blob){
+      return new Promise((resolve,reject)=>{
+        const reader=new FileReader();
+        reader.onload=()=>resolve(reader.result);
+        reader.onerror=reject;
+        reader.readAsDataURL(blob)
+      })
+    }
     letterForm.addEventListener("submit",async e=>{
       e.preventDefault();
       if(!note.value.trim()){e.preventDefault();sendStatus.textContent="write a little something first";note.focus();return}
@@ -152,12 +152,18 @@
       try{
         sendStatus.textContent="preparing your letter…";
         const blob=await buildLetterImage();
-        const transfer=new DataTransfer();
-        transfer.items.add(new File([blob],"birthday-letter.jpg",{type:"image/jpeg"}));
-        letterAttachment.files=transfer.files;
+        const image=await blobToDataURL(blob);
         sendStatus.textContent="sending…";
-        sendingLetter=true;
-        letterForm.submit()
+        const response=await fetch(inboxEndpoint,{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({message:note.value.trim(),image,website:""})
+        });
+        const result=await response.json().catch(()=>({success:false}));
+        if(!response.ok||!result.success)throw new Error("not saved");
+        sendStatus.textContent="your letter and picture have been safely received";
+        note.value="";
+        send.disabled=false
       }catch(error){
         sendStatus.textContent="not sent — please check the network and try again";
         send.disabled=false;

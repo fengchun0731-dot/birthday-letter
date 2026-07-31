@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Birthday Inbox</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;min-height:100svh;padding:24px 16px 60px;background:#ead8b6;color:#513c32;font-family:"Songti SC","STSong","FangSong",serif}
+    main{width:min(760px,100%);margin:auto}h1{margin:18px 0 4px;text-align:center;color:#7b3140;font:italic 28px Georgia,serif;letter-spacing:.06em}header p{text-align:center;font-size:13px;opacity:.68}
+    #status{text-align:center;margin:48px 0;font-size:14px}.letter{margin:22px 0;padding:24px;background:#d2b78d;box-shadow:0 10px 30px #694d3530;border:1px solid #7c5f3d30}.letter img{display:block;width:100%;height:auto;margin-bottom:18px}.message{white-space:pre-wrap;font-size:17px;line-height:1.85}.time{margin-top:18px;text-align:right;font:italic 12px Georgia,serif;opacity:.62}
+  </style>
+</head>
+<body>
+  <main>
+    <header><h1>Letters for Fengchun</h1><p>只属于你的生日收信箱</p></header>
+    <p id="status">正在打开信箱…</p>
+    <section id="letters"></section>
+  </main>
+  <script>
+    const endpoint="https://fengchun0731-d2g8m7mudec2f9975.service.tcloudbase.com/birthday-inbox-v2";
+    const token=location.hash.slice(1);
+    const status=document.querySelector("#status"),list=document.querySelector("#letters");
+    function safeText(value){const node=document.createElement("div");node.textContent=value;return node.innerHTML}
+    async function load(){
+      if(!token){status.textContent="这是一只上锁的私人信箱";return}
+      try{
+        const response=await fetch(`${endpoint}?token=${encodeURIComponent(token)}`,{cache:"no-store"});
+        const data=await response.json();
+        if(!response.ok||!data.success)throw new Error();
+        status.textContent=data.letters.length?`共收到 ${data.letters.length} 封信`:"信箱还是空的";
+        list.innerHTML=data.letters.map(letter=>`
+          <article class="letter">
+            ${letter.imageUrl?`<img src="${letter.imageUrl}" alt="生日来信图片">`:""}
+            <div class="message">${safeText(letter.message)}</div>
+            <div class="time">${new Date(letter.createdAt).toLocaleString("zh-CN",{hour12:false})}</div>
+          </article>`).join("")
+      }catch(error){status.textContent="信箱暂时没有打开，请刷新再试"}
+    }
+    load();
+  </script>
+</body>
+</html>
